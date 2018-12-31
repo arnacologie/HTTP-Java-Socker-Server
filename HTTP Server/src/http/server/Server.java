@@ -111,11 +111,13 @@ public class Server {
                                 }
                             }
                             //Je revoie au client les données rentrees (test-only)
-                            httpResponse+= "\nContent-Type: text/html; charset=utf-8";
-                            httpResponse+= "\nServer: Server_EG";
-                            httpResponse+= "\n";
-                            httpResponse+= "\n<H2>Post->\" + postData + \"</H2>";
-                            client.getOutputStream().write(POSTOutput.getBytes("UTF-8"));
+                            httpResponse = "HTTP/1.1 200 \r\n";
+                            httpResponse+= "Content-Type: text/plain\r\n";
+                            httpResponse+= "Connection: close\r\n";
+                            httpResponse+= "\r\n";
+                            httpResponse+= POSTOutput;
+                            httpResponse+= "\r\n";
+                            client.getOutputStream().write(httpResponse.getBytes("UTF-8"));
                             brRequest.close();
                             break;
                         default:
