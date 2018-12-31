@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sondage Labo : Il y a plus</title>
+</head>
+<body>
+  <h2 align="left">Tu veux rejoindre le labo ? On a besoin de quelques infos sur toi !</h2>
+  <form method="POST" action="src\http\server\HTTPServer.java">
+    Ton prénom : <input type="text" name="name"><br /><br />
+    Ton nom : <input type="text" name="family_name"><br /><br />
+    Choisis un mot de passe : <input type="password" name="password"><br /><br />
+    En quelle année est tu ?
+    <input type="radio" name="year" value="B1" />Bachelor 1
+    <input type="radio" name="year" value="B2" />Bachelor 2
+    <input type="radio" name="year" value="B3" />Bachelor 3
+    <input type="radio" name="year" value="M1" />Mastere 1
+    <input type="radio" name="year" value="M2" />Mastere 2<br /><br />
+    Quelle est ta filière ?
+    <input type="radio" name="school" value="Ingesup" />Ingesup
+    <input type="radio" name="school" value="ISEE Business School" />ISEE Business School
+    <input type="radio" name="school" value="Filiere artistique" />Filiere artistique<br /><br />
+    Qu'est-ce que tu aimerais faire au labo :
+    <input type="checkbox" name="subject" value="Revoir des notions" />Revoir des notions
+    <input type="checkbox" name="subject" value="Voir plus en detail un sujet" />Voir plus en detail un sujet
+    <input type="checkbox" name="subject" value="Proposer un cours" />Proposer un cours
+    <input type="checkbox" name="subject" value="Proposer une aide sur un sujet particulier" />Proposer une aide sur un sujet particulier
+    <input type="checkbox" name="subject" value="Preparer une certification" />Preparer une certification<br /><br />
+    Quel jour pense-tu être le plus présent :
+    <select name="day">
+      <option value="tue">Mardi</option>
+      <option value="wed">Mercredi</option>
+      <option value="thu">Jeudi</option>
+    </select><br /><br />
+    <textarea rows="3" cols="30" name="bonus">Si tu as quelque chose à nous dire, c'est ici !</textarea><br /><br />
+    <input type="submit" value="Envoyer" />
+    <input type="reset" value="Tout effacer" />
+    <input type="hidden" name="action" value="registration" />
+  </form>
+</body>
+</html>
