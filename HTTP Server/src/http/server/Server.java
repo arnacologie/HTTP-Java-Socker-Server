@@ -5,8 +5,10 @@
  */
 package http.server;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +18,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -49,6 +52,7 @@ public class Server {
                     String methodRequest = requestParam[0];
                     String path = requestParam[1];
                     System.out.println(methodRequest);
+                    Date today;
                     
                     switch(methodRequest){
                         case "GET":
@@ -68,19 +72,51 @@ public class Server {
                                 //Fermeture des streams
                                 bfr404.close();
                             }
-                            //Chargement de la page demandée
-                            BufferedReader brFile = new BufferedReader(new FileReader(file));
                             String line;
-                            while ((line = brFile.readLine()) != null) {
-                                httpResponse += line;
+                            //Chargement de la page demandée
+                            //L'image ne s'affiche pas, j'ai tenté en vain
+                            if(path.endsWith(".jpg") || path.endsWith(".jpeg")){
+                                String image = "";
+                                BufferedImage bI = null;
+                                try{
+                                    bI = ImageIO.read(file);
+                                }catch(FileNotFoundException e){
+                                    System.out.println(e.getMessage());
+                                }
+                                
+                                today = new Date();
+                                httpResponse = "HTTP/1.1 200 \r\n";
+                                httpResponse+= "Date : "+today.toString()+"\r\n";
+                                httpResponse+= "Server: Server_EG\r\n";
+                                httpResponse+= "Content-Type: image/jpg\r\n";
+
+                                httpResponse+= bI;
+                                httpResponse+= "\r\n";
+                                client.getOutputStream().write(httpResponse.getBytes("UTF-8"));
+                                //Fermeture des streams
+                                brRequest.close();
                             }
                             
-                            //Renvoi de la page demandée à l'utilisateur
-                            client.getOutputStream().write(httpResponse.getBytes("UTF-8"));
-                            
-                            //Fermeture des streams
-                            brRequest.close();
-                            brFile.close();
+                            else try(BufferedReader brFile = new BufferedReader(new FileReader(file))){
+                                    today = new Date();
+                                    httpResponse = "HTTP/1.1 200 OK\r\n";
+                                    httpResponse+= "Date : "+today.toString()+"\r\n";
+                                    httpResponse+= "Server: Server_EG\r\n";
+                                    httpResponse+= "Content-Type: text/html\r\n";
+                                    httpResponse+= "\n";
+                                    while ((line = brFile.readLine()) != null) {
+                                        httpResponse += line;
+                                    }
+                                    httpResponse+= "\r\n";
+                                    //Renvoi de la page demandée à l'utilisateur
+                                    client.getOutputStream().write(httpResponse.getBytes("UTF-8"));
+
+                                    //Fermeture des streams
+                                    brRequest.close();
+                                    brFile.close();
+                                }catch(FileNotFoundException e){
+                                    System.out.println(e.getMessage());
+                                }
                             break;
                         case "POST":
                             int postDataI = -1;
@@ -110,11 +146,14 @@ public class Server {
                                     POSTOutput+=s+"\n\n";
                                 }
                             }
+                            today = new Date();
                             //Je revoie au client les données rentrees (test-only)
                             httpResponse = "HTTP/1.1 200 \r\n";
-                            httpResponse+= "Content-Type: text/plain\r\n";
+                            httpResponse+= "Date : "+today.toString()+"\r\n";
+                            httpResponse+= "Server: Server_EG\r\n";
                             httpResponse+= "Connection: close\r\n";
-                            httpResponse+= "\r\n";
+                            httpResponse+= "Content-Type: text/plain\r\n";
+                            httpResponse+="\n";
                             httpResponse+= POSTOutput;
                             httpResponse+= "\r\n";
                             client.getOutputStream().write(httpResponse.getBytes("UTF-8"));
